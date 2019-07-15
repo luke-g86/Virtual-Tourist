@@ -12,6 +12,9 @@
 		0440E31422DCCDAD00839169 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0440E31222DCCDAD00839169 /* Main.storyboard */; };
 		0440E31622DCCDAE00839169 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0440E31522DCCDAE00839169 /* Assets.xcassets */; };
 		0440E31922DCCDAE00839169 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0440E31722DCCDAE00839169 /* LaunchScreen.storyboard */; };
+		0440E32422DCCF6700839169 /* FetchedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440E32322DCCF6700839169 /* FetchedPhoto.swift */; };
+		0440E32622DCCF7400839169 /* PhotosSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440E32522DCCF7400839169 /* PhotosSearchResponse.swift */; };
+		0440E32822DCCFAE00839169 /* APIendpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440E32722DCCFAE00839169 /* APIendpoints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +25,9 @@
 		0440E31522DCCDAE00839169 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0440E31822DCCDAE00839169 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0440E31A22DCCDAE00839169 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0440E32322DCCF6700839169 /* FetchedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedPhoto.swift; sourceTree = "<group>"; };
+		0440E32522DCCF7400839169 /* PhotosSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosSearchResponse.swift; sourceTree = "<group>"; };
+		0440E32722DCCFAE00839169 /* APIendpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIendpoints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,13 +61,40 @@
 			isa = PBXGroup;
 			children = (
 				0440E30E22DCCDAD00839169 /* AppDelegate.swift */,
+				0440E32022DCCF4300839169 /* Model */,
 				0440E31022DCCDAD00839169 /* ViewController.swift */,
+				0440E32222DCCF5200839169 /* Controller */,
+				0440E32122DCCF4800839169 /* View */,
 				0440E31222DCCDAD00839169 /* Main.storyboard */,
 				0440E31522DCCDAE00839169 /* Assets.xcassets */,
 				0440E31722DCCDAE00839169 /* LaunchScreen.storyboard */,
 				0440E31A22DCCDAE00839169 /* Info.plist */,
 			);
 			path = "Udacity-virtual-tourist";
+			sourceTree = "<group>";
+		};
+		0440E32022DCCF4300839169 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0440E32322DCCF6700839169 /* FetchedPhoto.swift */,
+				0440E32522DCCF7400839169 /* PhotosSearchResponse.swift */,
+				0440E32722DCCFAE00839169 /* APIendpoints.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		0440E32122DCCF4800839169 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		0440E32222DCCF5200839169 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +168,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0440E32422DCCF6700839169 /* FetchedPhoto.swift in Sources */,
 				0440E31122DCCDAD00839169 /* ViewController.swift in Sources */,
+				0440E32822DCCFAE00839169 /* APIendpoints.swift in Sources */,
 				0440E30F22DCCDAD00839169 /* AppDelegate.swift in Sources */,
+				0440E32622DCCF7400839169 /* PhotosSearchResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
