@@ -15,8 +15,8 @@ struct PhotosSearchResponse: Codable {
 
 struct Photos: Codable {
     let page: Int
-    let pages: String
-    let perpage: String
+    let pages: Int
+    let perpage: Int
     let total: String
     let photo: [FetchedPhoto]
     

@@ -10,31 +10,66 @@ import Foundation
 
 class APIendpoints {
     
-    struct APIStruct {
-        static let key = "4afb415cd8b1924e93014c604b3ed5fe"
-        static let secret = "9fdfd0b07058d6db"
+    
+    struct FlickrEndpointKeys {
+        static let method = "method"
+        static let APIkey = "api_key"
+        static let format = "format"
+        static let radius = "radius"
+        static let noJsonCallBack = "nojsoncallback"
+        static let perPage = "per_page"
+        static let latitude = "lat"
+        static let longitude = "lon"
+    }
+    
+    struct FlickrEndpointValues {
+        static let APIkey = "4afb415cd8b1924e93014c604b3ed5fe"
+        static let scheme = "https"
+        static let host = "www.flickr.com"
+        static let path = "/services/rest/"
+        static let method = "flickr.photos.search"
+        static let format = "json"
+        // Radius city level
+        static let radius = 6
+        // No callback
+        static let noJsonCallBack = 1
+        // No. of pictures
+        static let perPage = 20
         
-        private init() {}
     }
     
     
-    
-    
-    enum Endpoints {
+    class func constructURL(latitude: Double, longitute: Double) -> URLComponents {
+        var url = URLComponents()
+        url.scheme = FlickrEndpointValues.scheme
+        url.host = FlickrEndpointValues.host
+        url.path = FlickrEndpointValues.path
         
-        static let base = "https://www.flickr.com/services/rest/?method="
         
-        case photoSearch
+        let urlQueryItems = [
+            FlickrEndpointKeys.format : FlickrEndpointValues.format,
+            FlickrEndpointKeys.radius : FlickrEndpointValues.radius,
+            FlickrEndpointKeys.noJsonCallBack : FlickrEndpointValues.noJsonCallBack,
+            FlickrEndpointKeys.perPage : FlickrEndpointValues.perPage
+            ] as [String : Any]
         
-        var urlBody: String {
-            switch self {
-            case .photoSearch: return APIendpoint.base + "flickr.photos.search&api_key=" + APIStruct.key
-            }
+  
+        
+        url.queryItems = [
+            URLQueryItem(name: FlickrEndpointKeys.method, value: FlickrEndpointValues.method),
+            URLQueryItem(name: FlickrEndpointKeys.APIkey, value: FlickrEndpointValues.APIkey),
+            URLQueryItem(name: FlickrEndpointKeys.latitude, value: String(format: "%.5f", latitude)),
+            URLQueryItem(name: FlickrEndpointKeys.longitude, value: String(format: "%.5f", longitute))
+        ]
+        
+        for (key, value) in urlQueryItems {
+            let item = URLQueryItem(name: key, value: "\(value)")
+            url.queryItems?.append(item)
         }
         
+        return url
+        
     }
-    
-    
     
     
     
