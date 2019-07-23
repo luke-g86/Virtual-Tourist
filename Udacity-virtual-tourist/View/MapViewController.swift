@@ -19,10 +19,10 @@ class MapViewController: UIViewController {
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
-    var userPins = [MKPointAnnotation]()
+
     var selectedPin: MKAnnotation?
     
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +31,17 @@ class MapViewController: UIViewController {
         mapView.delegate = self
         mapView.addGestureRecognizer(longTap)
         
-        
+        setupFetchedResultsController()
+        fetchPinToMap()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        setupFetchedResultsController()
+        fetchPinToMap()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        fetchedResultsController = nil
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -49,32 +55,82 @@ class MapViewController: UIViewController {
         }
     }
     
+    //MARK: - Interaction with a map
+    
     @objc func longTapRecognizer(sender: UIGestureRecognizer) {
         
         if sender.state == .began {
             let locationInView = sender.location(in: mapView)
-            let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
             
-            let pin = MKPointAnnotation()
-            pin.coordinate = locationOnMap
-            
-            userPins.append(pin)
-            mapView.addAnnotations(userPins)
-            
-            APIConnection.getPhotosFromFlickr()
+            let pin = Pin(context: dataController.viewContext)
+            pin.coordinates = mapView.convert(locationInView, toCoordinateFrom: mapView)
+            pin.creationDate = Date()
+            try? dataController.viewContext.save()
+        
+            downloadDataFromFlickr(coordinates: pin.coordinates)
         }
+    }
+    
+    
+    func fetchPinToMap() {
+        guard let arrayOfPins = fetchedResultsController.fetchedObjects else { return }
+        
+        //        var annotation = MKPointAnnotation()
+        //        guard let first = arrayOfPins.first?.coordinates else {return}
+        //        annotation.coordinate = first
+        //        mapView.addAnnotation(annotation)
+        //
+        for pin in arrayOfPins {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = pin.coordinates
+            mapView.addAnnotation(annotation)
+        }
+    }
+    
+    // MARK: - Network connection
+    
+    func downloadDataFromFlickr(coordinates: CLLocationCoordinate2D) {
+        
+        let latitude = coordinates.latitude
+        let longitude = coordinates.longitude
+        
+        APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude) { (photos, error) in
+            
+            guard let photos = photos else{
+                print(error?.localizedDescription ?? "error")
+                return
+            }
+//            for photo in photos {
+//                print(photo.absoluteString)
+//            }
+            print(photos.count)
+        }
+        
         
     }
     
-    func addLocationToTheMap(location: CLLocationCoordinate2D) {
+    // MARK: - Setting Fetched Results Controller
+    
+    func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         
-        mapView.removeAnnotations(userPins)
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pins")
+        
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
         
     }
     
 }
 
-extension MapViewController: MKMapViewDelegate {
+extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -89,7 +145,7 @@ extension MapViewController: MKMapViewDelegate {
             pinView!.animatesDrop = true
             pinView!.canShowCallout = true
             pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-        
+            
         }
         else {
             pinView!.annotation = annotation
@@ -106,11 +162,24 @@ extension MapViewController: MKMapViewDelegate {
             }
         }
     }
-//
+    //
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
-        selectedPin = view.annotation!
-        performSegue(withIdentifier: "showDetails", sender: nil)
+        // TODO - selection from fetched data
+        
+        
+        //        selectedPin = view.annotation!
+        //        performSegue(withIdentifier: "showDetails", sender: nil)
     }
+    
+    
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // update maps
+        
+        fetchPinToMap()
+        
     }
+    
+}
 

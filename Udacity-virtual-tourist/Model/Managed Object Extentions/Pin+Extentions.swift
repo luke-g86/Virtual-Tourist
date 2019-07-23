@@ -8,12 +8,24 @@
 
 import Foundation
 import CoreData
+import MapKit
 
 
 extension Pin {
+    
     public override func awakeFromInsert() {
         super.awakeFromInsert()
         creationDate = Date()
+    }
+
+    var coordinates: CLLocationCoordinate2D {
+        set {
+            latitude = newValue.latitude
+            longitude = newValue.longitude
+        }
+        get {
+            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        }
     }
     
 }

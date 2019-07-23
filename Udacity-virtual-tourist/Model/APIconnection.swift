@@ -10,32 +10,34 @@ import Foundation
 
 class APIConnection {
     
-    static let lat: Double = 37.76007833
-    static let lon: Double = -122.50956667
-    
-    class func getDataFromFlickr() {
+    class func getDataFromFlickr(longitude: Double, latitude: Double, completionHandler: @escaping ([URL]?, Error?) -> Void) {
         
-        let createdURL = APIendpoints.constructURL(latitude: lat, longitute: lon).url
-        
-        print("created url: \(createdURL)")
+        let createdURL = APIendpoints.constructURL(latitude: latitude, longitute: longitude).url
         
         let task = URLSession.shared.dataTask(with: createdURL!) { (data, response, error) in
             
             guard let data = data else {
-                print(error?.localizedDescription ?? "error")
+                DispatchQueue.main.async {
+                    completionHandler(nil, error)
+                }
                 return
             }
             let decoder = JSONDecoder()
             do {
                 let requestObject = try decoder.decode(PhotosSearchResponse.self, from: data)
-                    print("response =====")
-                print(requestObject.photos.photo.count)
-                for photoURL in requestObject.photos.photo {
-                    let url = urlFromFlickrData(server: photoURL.server, id: photoURL.id, secret: photoURL.secret, farm: photoURL.farm).url.
+                DispatchQueue.main.async {
+                    var photos: [URL] = []
+                    for photoURL in requestObject.photos.photo {
+                        guard let url = urlFromFlickrData(server: photoURL.server, id: photoURL.id, secret: photoURL.secret, farm: photoURL.farm).url else { return }
+                        photos.append(url)
+                    }
+                    completionHandler(photos, nil)
                 }
                 
             } catch {
-                print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    completionHandler([], error)
+                }
             }
             
         }
