@@ -22,6 +22,7 @@
 		04C56FA922E2F13000F889AA /* Pin+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FA822E2F13000F889AA /* Pin+Extentions.swift */; };
 		04C56FAD22E2F19F00F889AA /* Photo+Extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FAC22E2F19F00F889AA /* Photo+Extention.swift */; };
 		04C56FAF22E5922E00F889AA /* APIconnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FAE22E5922E00F889AA /* APIconnection.swift */; };
+		C34D42C922E802D400BC7126 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C34D42C822E802D400BC7126 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		04C56FA822E2F13000F889AA /* Pin+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Pin+Extentions.swift"; sourceTree = "<group>"; };
 		04C56FAC22E2F19F00F889AA /* Photo+Extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo+Extention.swift"; sourceTree = "<group>"; };
 		04C56FAE22E5922E00F889AA /* APIconnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIconnection.swift; sourceTree = "<group>"; };
+		C34D42C822E802D400BC7126 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C34D42C922E802D400BC7126 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +63,7 @@
 			children = (
 				0440E30D22DCCDAD00839169 /* Udacity-virtual-tourist */,
 				0440E30C22DCCDAD00839169 /* Products */,
+				C34D42C722E802D400BC7126 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,6 +130,14 @@
 			path = "Managed Object Extentions";
 			sourceTree = "<group>";
 		};
+		C34D42C722E802D400BC7126 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C34D42C822E802D400BC7126 /* MapKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -158,6 +170,11 @@
 				TargetAttributes = {
 					0440E30A22DCCDAD00839169 = {
 						CreatedOnToolsVersion = 10.2.1;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};

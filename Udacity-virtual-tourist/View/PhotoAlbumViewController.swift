@@ -9,21 +9,56 @@
 import Foundation
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoAlbumViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     
+    var pin: Pin!
+    var dataController: DataController!
+    var fetchedResultsController: NSFetchedResultsController<Photo>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    
+        
+        setupFetchedResultsController()
+        
+        pin = Pin(context: dataController.viewContext)
+        
+        let photo = Photo(context: dataController.viewContext)
+        print("photoAlbumViewController")
+        print(photo.pin?.photos)
+        print("photo: \(photo)")
+        print("pin: \(pin)")
         mapView.delegate = self
         
     }
+    
+    func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "\(pin)-photos")
+        
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+        
+    }
+    
 }
 
-extension PhotoAlbumViewController: MKMapViewDelegate {
+extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -46,4 +81,12 @@ extension PhotoAlbumViewController: MKMapViewDelegate {
         
         return pinView
     }
+    
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
+        
+    }
+        
+    
 }
