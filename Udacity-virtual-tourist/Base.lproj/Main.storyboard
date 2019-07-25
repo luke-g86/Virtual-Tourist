@@ -61,21 +61,39 @@
                                         <rect key="frame" x="0.0" y="160" width="414" height="658"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="0ZB-MQ-QTh">
-                                            <size key="itemSize" width="50" height="50"/>
+                                            <size key="itemSize" width="133" height="137"/>
                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" id="1hd-pp-eQX">
-                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" reuseIdentifier="photoCell" id="1hd-pp-eQX" customClass="PhotosCollectionViewCell" customModule="Udacity_virtual_tourist" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="133" height="137"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="133" height="137"/>
                                                     <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Nha-FO-UfV">
+                                                            <rect key="frame" x="0.0" y="0.0" width="133" height="0.0"/>
+                                                        </imageView>
+                                                    </subviews>
                                                 </view>
+                                                <constraints>
+                                                    <constraint firstItem="Nha-FO-UfV" firstAttribute="leading" secondItem="1hd-pp-eQX" secondAttribute="leading" id="5Nz-UQ-8eS"/>
+                                                    <constraint firstItem="Nha-FO-UfV" firstAttribute="top" secondItem="1hd-pp-eQX" secondAttribute="top" id="F2d-6V-gnP"/>
+                                                    <constraint firstItem="Nha-FO-UfV" firstAttribute="centerX" secondItem="1hd-pp-eQX" secondAttribute="centerX" id="MnV-7W-ghX"/>
+                                                    <constraint firstItem="Nha-FO-UfV" firstAttribute="centerY" secondItem="1hd-pp-eQX" secondAttribute="centerY" id="UEk-jj-24a"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outlet property="imageView" destination="Nha-FO-UfV" id="Ct2-Ik-o5R"/>
+                                                </connections>
                                             </collectionViewCell>
                                         </cells>
+                                        <connections>
+                                            <outlet property="dataSource" destination="pSA-1w-gyr" id="OND-rs-tTY"/>
+                                            <outlet property="delegate" destination="pSA-1w-gyr" id="bhE-oR-9Jz"/>
+                                        </connections>
                                     </collectionView>
                                 </subviews>
                             </stackView>
@@ -91,6 +109,7 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="cTx-qZ-ve7" id="VIl-4d-JEQ"/>
+                        <outlet property="photosCollectionView" destination="DUp-aQ-4me" id="g8a-jk-Ds0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rbB-Tp-HqL" userLabel="First Responder" sceneMemberID="firstResponder"/>

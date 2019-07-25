@@ -12,7 +12,7 @@ import CoreData
 extension Photo {
     public override func awakeFromInsert() {
         super.awakeFromInsert()
-        creationdate = Date()
+        creationDate = Date()
     }
 }
 

@@ -18,8 +18,6 @@ class MapViewController: UIViewController {
     
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
-    
-
     var selectedPin: MKAnnotation?
     
     
@@ -32,12 +30,12 @@ class MapViewController: UIViewController {
         mapView.addGestureRecognizer(longTap)
         
         setupFetchedResultsController()
-        fetchPinToMap()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         setupFetchedResultsController()
-        fetchPinToMap()
+       fetchPinToMap()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -47,13 +45,12 @@ class MapViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetails" {
             if let vc = segue.destination as? PhotoAlbumViewController {
-                if let pin = selectedPin {
-                    vc.mapView.addAnnotation(pin)
-                    print(pin)
-                }
+                vc.dataController = dataController
+                vc.pin = sender as? Pin
             }
         }
     }
+    
     
     //MARK: - Interaction with a map
     
@@ -63,36 +60,48 @@ class MapViewController: UIViewController {
             let locationInView = sender.location(in: mapView)
             
             let pin = Pin(context: dataController.viewContext)
-            pin.coordinates = mapView.convert(locationInView, toCoordinateFrom: mapView)
+            pin.coordinate = mapView.convert(locationInView, toCoordinateFrom: mapView)
             pin.creationDate = Date()
-            try? dataController.viewContext.save()
-        
-            downloadDataFromFlickr(coordinates: pin.coordinates)
-        }
-    }
-    
-    
-    func fetchPinToMap() {
-        guard let arrayOfPins = fetchedResultsController.fetchedObjects else { return }
-        
-        //        var annotation = MKPointAnnotation()
-        //        guard let first = arrayOfPins.first?.coordinates else {return}
-        //        annotation.coordinate = first
-        //        mapView.addAnnotation(annotation)
-        //
-        for pin in arrayOfPins {
+            
             let annotation = MKPointAnnotation()
-            annotation.coordinate = pin.coordinates
+            annotation.coordinate = pin.coordinate
             mapView.addAnnotation(annotation)
+            
+            downloadDataFromFlickr(pin: pin)
+            
+            do {
+                try dataController.viewContext.save()
+                print("saving")
+            } catch {
+                print("error in saving")
+            }
+            
         }
     }
+    
+
+    func fetchPinToMap() {
+        
+        guard let arrayOfPins = fetchedResultsController.fetchedObjects else {
+            print("error")
+            return
+        }
+        if mapView.annotations.count < arrayOfPins.count {
+            for pin in arrayOfPins {
+                let geoAnnotation = MKPointAnnotation()
+                geoAnnotation.coordinate = pin.coordinate
+                self.mapView.addAnnotation(geoAnnotation)
+            }
+        }
+    }
+    
     
     // MARK: - Network connection
     
-    func downloadDataFromFlickr(coordinates: CLLocationCoordinate2D) {
+    func downloadDataFromFlickr(pin: Pin) {
         
-        let latitude = coordinates.latitude
-        let longitude = coordinates.longitude
+        let latitude = pin.coordinate.latitude
+        let longitude = pin.coordinate.longitude
         
         APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude) { (photos, error) in
             
@@ -100,13 +109,19 @@ class MapViewController: UIViewController {
                 print(error?.localizedDescription ?? "error")
                 return
             }
-//            for photo in photos {
-//                print(photo.absoluteString)
-//            }
-            print(photos.count)
+            
+            for url in photos {
+                let photo = Photo(context: self.dataController.viewContext)
+                photo.creationDate = Date()
+                photo.imageURL = url
+                photo.pin = pin
+            }
+            do {
+                try self.dataController.viewContext.save()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
-        
-        
     }
     
     // MARK: - Setting Fetched Results Controller
@@ -125,7 +140,6 @@ class MapViewController: UIViewController {
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
-        
     }
     
 }
@@ -133,7 +147,6 @@ class MapViewController: UIViewController {
 extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
         
         let reuseId = "pin"
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
@@ -162,8 +175,14 @@ extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelega
             }
         }
     }
+
     //
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        
+        guard let pins = fetchedResultsController.fetchedObjects else { return}
+        let pin = pins.filter{$0.coordinate.latitude == view.annotation!.coordinate.latitude && $0.coordinate.longitude == view.annotation!.coordinate.longitude}.first
+
+        performSegue(withIdentifier: "showDetails", sender: pin)
         
         // TODO - selection from fetched data
         
@@ -181,5 +200,19 @@ extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelega
         
     }
     
+    
+    //    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    //        guard let pin = anObject as? Pin else {
+    //            print(preconditionFailure("all changes observed in the mapView should be for Pin"))
+    //            return}
+    //
+    //        switch type {
+    //        case .insert:
+    //            mapView.addAnnotations(pin)
+    //        case .update:
+    //        case .delete:
+    //        }
+    //
+    //    }
 }
 

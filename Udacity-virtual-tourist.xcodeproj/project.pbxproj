@@ -22,6 +22,8 @@
 		04C56FA922E2F13000F889AA /* Pin+Extentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FA822E2F13000F889AA /* Pin+Extentions.swift */; };
 		04C56FAD22E2F19F00F889AA /* Photo+Extention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FAC22E2F19F00F889AA /* Photo+Extention.swift */; };
 		04C56FAF22E5922E00F889AA /* APIconnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FAE22E5922E00F889AA /* APIconnection.swift */; };
+		C34D42C922E802D400BC7126 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C34D42C822E802D400BC7126 /* MapKit.framework */; };
+		C3A705F522E957AC001D05E8 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A705F422E957AC001D05E8 /* CollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 		04C56FA822E2F13000F889AA /* Pin+Extentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Pin+Extentions.swift"; sourceTree = "<group>"; };
 		04C56FAC22E2F19F00F889AA /* Photo+Extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo+Extention.swift"; sourceTree = "<group>"; };
 		04C56FAE22E5922E00F889AA /* APIconnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIconnection.swift; sourceTree = "<group>"; };
+		C34D42C822E802D400BC7126 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		C3A705F422E957AC001D05E8 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C34D42C922E802D400BC7126 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +65,7 @@
 			children = (
 				0440E30D22DCCDAD00839169 /* Udacity-virtual-tourist */,
 				0440E30C22DCCDAD00839169 /* Products */,
+				C34D42C722E802D400BC7126 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,8 +83,8 @@
 				0440E30E22DCCDAD00839169 /* AppDelegate.swift */,
 				0440E32022DCCF4300839169 /* Model */,
 				0440E31022DCCDAD00839169 /* ViewController.swift */,
-				0440E32222DCCF5200839169 /* Controller */,
-				0440E32122DCCF4800839169 /* View */,
+				0440E32222DCCF5200839169 /* View */,
+				0440E32122DCCF4800839169 /* Controller */,
 				0440E31222DCCDAD00839169 /* Main.storyboard */,
 				0440E31522DCCDAE00839169 /* Assets.xcassets */,
 				0440E31722DCCDAE00839169 /* LaunchScreen.storyboard */,
@@ -91,30 +97,29 @@
 			isa = PBXGroup;
 			children = (
 				04C56FA722E2F11E00F889AA /* Managed Object Extentions */,
-				0440E32322DCCF6700839169 /* FetchedPhoto.swift */,
-				0440E32522DCCF7400839169 /* PhotosSearchResponse.swift */,
-				0440E32722DCCFAE00839169 /* APIendpoints.swift */,
-				04C56FAE22E5922E00F889AA /* APIconnection.swift */,
+				C3A705F922E982E0001D05E8 /* Connection */,
+				C3A705FA22E9830E001D05E8 /* Codable */,
 				04C56FA222E1A39000F889AA /* Virtual-Tourist.xcdatamodeld */,
 				04C56FA522E2DC3B00F889AA /* DataController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		0440E32122DCCF4800839169 /* View */ = {
+		0440E32122DCCF4800839169 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				0440E32922DD5A9F00839169 /* MapViewController.swift */,
 				04C56FA022E18BD700F889AA /* PhotoAlbumViewController.swift */,
 			);
-			path = View;
+			path = Controller;
 			sourceTree = "<group>";
 		};
-		0440E32222DCCF5200839169 /* Controller */ = {
+		0440E32222DCCF5200839169 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C3A705F422E957AC001D05E8 /* CollectionViewCell.swift */,
 			);
-			path = Controller;
+			path = View;
 			sourceTree = "<group>";
 		};
 		04C56FA722E2F11E00F889AA /* Managed Object Extentions */ = {
@@ -124,6 +129,32 @@
 				04C56FAC22E2F19F00F889AA /* Photo+Extention.swift */,
 			);
 			path = "Managed Object Extentions";
+			sourceTree = "<group>";
+		};
+		C34D42C722E802D400BC7126 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C34D42C822E802D400BC7126 /* MapKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C3A705F922E982E0001D05E8 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				0440E32722DCCFAE00839169 /* APIendpoints.swift */,
+				04C56FAE22E5922E00F889AA /* APIconnection.swift */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
+		C3A705FA22E9830E001D05E8 /* Codable */ = {
+			isa = PBXGroup;
+			children = (
+				0440E32522DCCF7400839169 /* PhotosSearchResponse.swift */,
+				0440E32322DCCF6700839169 /* FetchedPhoto.swift */,
+			);
+			path = Codable;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +189,11 @@
 				TargetAttributes = {
 					0440E30A22DCCDAD00839169 = {
 						CreatedOnToolsVersion = 10.2.1;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -205,6 +241,7 @@
 				04C56FA622E2DC3B00F889AA /* DataController.swift in Sources */,
 				0440E31122DCCDAD00839169 /* ViewController.swift in Sources */,
 				04C56FA922E2F13000F889AA /* Pin+Extentions.swift in Sources */,
+				C3A705F522E957AC001D05E8 /* CollectionViewCell.swift in Sources */,
 				04C56FAD22E2F19F00F889AA /* Photo+Extention.swift in Sources */,
 				0440E32822DCCFAE00839169 /* APIendpoints.swift in Sources */,
 				0440E30F22DCCDAD00839169 /* AppDelegate.swift in Sources */,
@@ -355,6 +392,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KM5KCLYSL2;
 				INFOPLIST_FILE = "Udacity-virtual-tourist/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -372,6 +410,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = KM5KCLYSL2;
 				INFOPLIST_FILE = "Udacity-virtual-tourist/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
