@@ -20,6 +20,7 @@ class APIendpoints {
         static let perPage = "per_page"
         static let latitude = "lat"
         static let longitude = "lon"
+        static let page = "page"
     }
     
     struct FlickrEndpointValues {
@@ -39,7 +40,7 @@ class APIendpoints {
     }
     
     
-    class func constructURL(latitude: Double, longitute: Double) -> URLComponents {
+    class func constructURL(latitude: Double, longitute: Double, page: Int32) -> URLComponents {
         var url = URLComponents()
         url.scheme = FlickrEndpointValues.scheme
         url.host = FlickrEndpointValues.host
@@ -59,7 +60,8 @@ class APIendpoints {
             URLQueryItem(name: FlickrEndpointKeys.method, value: FlickrEndpointValues.method),
             URLQueryItem(name: FlickrEndpointKeys.APIkey, value: FlickrEndpointValues.APIkey),
             URLQueryItem(name: FlickrEndpointKeys.latitude, value: String(format: "%.5f", latitude)),
-            URLQueryItem(name: FlickrEndpointKeys.longitude, value: String(format: "%.5f", longitute))
+            URLQueryItem(name: FlickrEndpointKeys.longitude, value: String(format: "%.5f", longitute)),
+            URLQueryItem(name: FlickrEndpointKeys.page, value: String(page))
         ]
         
         for (key, value) in urlQueryItems {

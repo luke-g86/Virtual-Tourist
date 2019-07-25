@@ -31,6 +31,7 @@ class PhotoAlbumViewController: UIViewController {
         setupCollectionView()
         
         
+        
         let annotation = MKPointAnnotation()
         annotation.coordinate = pin.coordinate
         
