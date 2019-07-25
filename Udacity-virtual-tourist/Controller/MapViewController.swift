@@ -67,8 +67,7 @@ class MapViewController: UIViewController {
             annotation.coordinate = pin.coordinate
             mapView.addAnnotation(annotation)
             
-            
-            //            downloadDataFromFlickr(coordinates: pin.coordinates)
+            downloadDataFromFlickr(pin: pin)
             
             do {
                 try dataController.viewContext.save()
@@ -99,10 +98,10 @@ class MapViewController: UIViewController {
     
     // MARK: - Network connection
     
-    func downloadDataFromFlickr(coordinates: CLLocationCoordinate2D) {
+    func downloadDataFromFlickr(pin: Pin) {
         
-        let latitude = coordinates.latitude
-        let longitude = coordinates.longitude
+        let latitude = pin.coordinate.latitude
+        let longitude = pin.coordinate.longitude
         
         APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude) { (photos, error) in
             
@@ -111,15 +110,18 @@ class MapViewController: UIViewController {
                 return
             }
             
-            let pin = Pin(context: self.dataController.viewContext)
-            let photoSet: NSSet = []
-            photoSet.addingObjects(from: photos)
-            
-            pin.addToPhotos(photoSet)
-            
+            for url in photos {
+                let photo = Photo(context: self.dataController.viewContext)
+                photo.creationDate = Date()
+                photo.imageURL = url
+                photo.pin = pin
+            }
+            do {
+                try self.dataController.viewContext.save()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
-        
-        
     }
     
     // MARK: - Setting Fetched Results Controller

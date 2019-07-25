@@ -27,9 +27,11 @@ class APIConnection {
                 let requestObject = try decoder.decode(PhotosSearchResponse.self, from: data)
                 DispatchQueue.main.async {
                     var photos: [URL] = []
+                    
                     for photoURL in requestObject.photos.photo {
                         guard let url = urlFromFlickrData(server: photoURL.server, id: photoURL.id, secret: photoURL.secret, farm: photoURL.farm).url else { return }
                         photos.append(url)
+                        requestObject.photos.pages
                     }
                     completionHandler(photos, nil)
                 }
@@ -55,6 +57,19 @@ class APIConnection {
         
         return urlComp
         
+    }
+    
+    class func downloadPhotos(url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+        
+        var request = URLRequest(url: url)
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let task = URLSession.shared.dataTask(with: request) {data, response, error in
+            DispatchQueue.main.async {
+                completionHandler(data, response, error)
+            }
+        }
+        task.resume()
     }
     
 }
