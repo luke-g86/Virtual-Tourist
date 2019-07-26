@@ -24,6 +24,7 @@
 		04C56FAF22E5922E00F889AA /* APIconnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C56FAE22E5922E00F889AA /* APIconnection.swift */; };
 		C34D42C922E802D400BC7126 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C34D42C822E802D400BC7126 /* MapKit.framework */; };
 		C3A705F522E957AC001D05E8 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A705F422E957AC001D05E8 /* CollectionViewCell.swift */; };
+		C3A705FC22EA9859001D05E8 /* CollectionViewFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A705FB22EA9859001D05E8 /* CollectionViewFlow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		04C56FAE22E5922E00F889AA /* APIconnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIconnection.swift; sourceTree = "<group>"; };
 		C34D42C822E802D400BC7126 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		C3A705F422E957AC001D05E8 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		C3A705FB22EA9859001D05E8 /* CollectionViewFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewFlow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				C3A705F422E957AC001D05E8 /* CollectionViewCell.swift */,
+				C3A705FB22EA9859001D05E8 /* CollectionViewFlow.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -245,6 +248,7 @@
 				04C56FAD22E2F19F00F889AA /* Photo+Extention.swift in Sources */,
 				0440E32822DCCFAE00839169 /* APIendpoints.swift in Sources */,
 				0440E30F22DCCDAD00839169 /* AppDelegate.swift in Sources */,
+				C3A705FC22EA9859001D05E8 /* CollectionViewFlow.swift in Sources */,
 				0440E32622DCCF7400839169 /* PhotosSearchResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
