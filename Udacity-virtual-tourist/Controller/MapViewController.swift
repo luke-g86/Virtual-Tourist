@@ -100,20 +100,34 @@ class MapViewController: UIViewController {
     
     func downloadDataFromFlickr(pin: Pin) {
         
+        var page: Int32
+     
         let latitude = pin.coordinate.latitude
         let longitude = pin.coordinate.longitude
         
-        APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude) { (photos, error) in
+        // If pin does not have maxPages count yet or maxPages count is less than 2
+        
+        if pin.maxPages < 2 {
+            page = 1
+        } else {
+            page = Int32.random(in: 1..<pin.maxPages)
+        }
+        
+        APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude, page: page) { (fetchedData, error) in
             
-            guard let photos = photos else{
+            guard let fetchedData = fetchedData else{
                 print(error?.localizedDescription ?? "error")
                 return
             }
             
-            for url in photos {
+            pin.maxPages = Int32(fetchedData.photos.pages)
+            
+            for url in fetchedData.photos.photo {
                 let photo = Photo(context: self.dataController.viewContext)
                 photo.creationDate = Date()
-                photo.imageURL = url
+                
+                photo.imageURL = APIConnection.urlFromFlickrData(server: url.server, id: url.id, secret: url.secret, farm: url.farm).url
+                
                 photo.pin = pin
             }
             do {

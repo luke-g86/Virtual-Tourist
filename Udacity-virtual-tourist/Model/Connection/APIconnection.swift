@@ -10,9 +10,9 @@ import Foundation
 
 class APIConnection {
     
-    class func getDataFromFlickr(longitude: Double, latitude: Double, completionHandler: @escaping ([URL]?, Error?) -> Void) {
+    class func getDataFromFlickr(longitude: Double, latitude: Double, page: Int32?, completionHandler: @escaping (PhotosSearchResponse?, Error?) -> Void) {
         
-        let createdURL = APIendpoints.constructURL(latitude: latitude, longitute: longitude).url
+        let createdURL = APIendpoints.constructURL(latitude: latitude, longitute: longitude, page: page ?? 1).url
         
         let task = URLSession.shared.dataTask(with: createdURL!) { (data, response, error) in
             
@@ -26,19 +26,12 @@ class APIConnection {
             do {
                 let requestObject = try decoder.decode(PhotosSearchResponse.self, from: data)
                 DispatchQueue.main.async {
-                    var photos: [URL] = []
-                    
-                    for photoURL in requestObject.photos.photo {
-                        guard let url = urlFromFlickrData(server: photoURL.server, id: photoURL.id, secret: photoURL.secret, farm: photoURL.farm).url else { return }
-                        photos.append(url)
-                        requestObject.photos.pages
-                    }
-                    completionHandler(photos, nil)
+                    completionHandler(requestObject, nil)
                 }
                 
             } catch {
                 DispatchQueue.main.async {
-                    completionHandler([], error)
+                    completionHandler(nil, error)
                 }
             }
             
