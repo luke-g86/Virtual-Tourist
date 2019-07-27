@@ -28,9 +28,7 @@ class CollectionViewFlow: UICollectionViewFlowLayout {
         
         itemSize = CGSize(width: width, height: width)
         
-        
-        
-//        collectionView!.decelerationRate = UIScrollView.DecelerationRate.fast
+
     }
     
 
@@ -47,17 +45,7 @@ class CollectionViewFlow: UICollectionViewFlowLayout {
 
         return CGPoint(x: 0, y: closesAttribute.center.y - centerOffset)
     }
-    
-//    override public var collectionViewContentSize: CGSize {
-//        return CGSize(width: , height: 200)
-//    }
-//
-//    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-//        return true
-//    }
-//    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-//        <#code#>
-//    }
+
 }
     
 
