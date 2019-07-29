@@ -58,7 +58,7 @@
                                         </constraints>
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="DUp-aQ-4me">
-                                        <rect key="frame" x="0.0" y="160" width="414" height="658"/>
+                                        <rect key="frame" x="0.0" y="160" width="414" height="616"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="0ZB-MQ-QTh">
                                             <size key="itemSize" width="133" height="137"/>
@@ -95,7 +95,22 @@
                                             <outlet property="delegate" destination="pSA-1w-gyr" id="bhE-oR-9Jz"/>
                                         </connections>
                                     </collectionView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C0i-PE-l3z">
+                                        <rect key="frame" x="0.0" y="776" width="414" height="42"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="42" id="VdP-7b-IJv"/>
+                                        </constraints>
+                                        <state key="normal" title="Button">
+                                            <color key="titleColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        </state>
+                                    </button>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="C0i-PE-l3z" firstAttribute="leading" secondItem="dvp-4o-z4B" secondAttribute="leading" id="6Qo-W0-vnZ"/>
+                                    <constraint firstAttribute="bottom" secondItem="C0i-PE-l3z" secondAttribute="bottom" id="SiW-X8-yny"/>
+                                    <constraint firstAttribute="trailing" secondItem="C0i-PE-l3z" secondAttribute="trailing" id="jd5-Jo-up7"/>
+                                </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -110,6 +125,7 @@
                     <connections>
                         <outlet property="mapView" destination="cTx-qZ-ve7" id="VIl-4d-JEQ"/>
                         <outlet property="photosCollectionView" destination="DUp-aQ-4me" id="g8a-jk-Ds0"/>
+                        <outlet property="refreshButton" destination="C0i-PE-l3z" id="Zn5-wD-ItB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rbB-Tp-HqL" userLabel="First Responder" sceneMemberID="firstResponder"/>

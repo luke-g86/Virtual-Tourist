@@ -113,6 +113,8 @@ class MapViewController: UIViewController {
             page = Int32.random(in: 1..<pin.maxPages)
         }
         
+        //MARK: Connection with the Flickr API
+        
         APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude, page: page) { (fetchedData, error) in
             
             guard let fetchedData = fetchedData else{
@@ -120,12 +122,16 @@ class MapViewController: UIViewController {
                 return
             }
             
-            pin.maxPages = Int32(fetchedData.photos.pages)
             
+            // For randomly selected page, URLs are being downloaded, parsed and saved for each photo.
+            // As user can drop multiple pins, actual photos are not downloaded yet.
+            
+            pin.maxPages = Int32(fetchedData.photos.pages)
             for url in fetchedData.photos.photo {
                 let photo = Photo(context: self.dataController.viewContext)
                 photo.creationDate = Date()
-                
+          
+                //MARK: Constructing URL
                 photo.imageURL = APIConnection.urlFromFlickrData(server: url.server, id: url.id, secret: url.secret, farm: url.farm).url
                 
                 photo.pin = pin

@@ -15,11 +15,12 @@ class PhotoAlbumViewController: UIViewController {
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
+    @IBOutlet weak var refreshButton: UIButton!
     
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Photo>!
-   
+    
     private var hiddenCells: [PhotosCollectionViewCell] = []
     private var expandedCell: PhotosCollectionViewCell?
     private var isStatusBarHidden = false
@@ -32,11 +33,13 @@ class PhotoAlbumViewController: UIViewController {
         super.viewDidLoad()
         
         
+        
         photosCollectionView.delegate = self
         photosCollectionView.collectionViewLayout = CollectionViewFlow()
         mapView.delegate = self
         
         setupFetchedResultsController()
+        downloadPictures()
         setupCollectionView()
         
         
@@ -71,9 +74,60 @@ class PhotoAlbumViewController: UIViewController {
         } catch {
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
+    }
+    
+    func downloadPictures() {
+        guard let arrayOfPhotos = fetchedResultsController.fetchedObjects else { return }
+        for photo in arrayOfPhotos {
+            if photo.image == nil {
+                APIConnection.downloadPhotos(url: photo.imageURL!) { (data, response, error) in
+                    DispatchQueue.main.async {
+                    guard let data = data else {
+                        print(error?.localizedDescription ?? "other error")
+                        return
+                    }
+                        photo.image = data
+                        print(photo.image)
+                        self.photosCollectionView.reloadData()
+                    }
+                }
+            }
+        }
+        
         
     }
     
+    func getNewPhotos(pin: Pin) {
+        
+        // deleting existing pictures
+        
+        fetchedResultsController.fetchReques
+        
+        // downloading new pictures
+        
+        
+        // updating the view
+        
+        
+        //        var page: Int32
+        //
+        //        if pin.maxPages < 2 {
+        //            page = 1
+        //        } else {
+        //            page = Int32.random(in: 1..<pin.maxPages)
+        //        }
+        //
+        //        APIConnection.getDataFromFlickr(longitude: pin.longitude, latitude: pin.latitude, page: page) { (dataResponse, error) in
+        //            guard let dataResponse = dataResponse else {
+        //                print(error?.localizedDescription)
+        //                return
+        //            }
+        //            for photo in dataResponse.photos.photo {
+        //                APIConnection.urlFromFlickrData(server: photo.server, id: photo.id, secret: photo.secret, farm: photo.farm)
+        //            }
+        //        }
+        
+    }
 }
 
 // MARK: - Extentions
@@ -95,24 +149,28 @@ extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControlle
         let photo = fetchedResultsController.object(at: indexPath)
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as! PhotosCollectionViewCell
-    
-    
+        
+        
         
         cell.imageView.image = UIImage(named: "placeholder")
-        
-        
-        if let url = photo.imageURL {
-            APIConnection.downloadPhotos(url: url) { (data, response, error) in
-                guard let data = data else {
-                    print(error?.localizedDescription ?? "error")
-                    return
-                }
+
+            if let data = photo.image {
                 cell.imageView.image = UIImage(data: data)
-            }
+            
         }
         
-        let photos = fetchedResultsController.fetchedObjects
-        
+//        if let url = photo.imageURL {
+//            APIConnection.downloadPhotos(url: url) { (data, response, error) in
+//                DispatchQueue.main.async {
+//                    guard let data = data else {
+//                        print(error?.localizedDescription ?? "error")
+//                        return
+//                    }
+//                    cell.imageView.image = UIImage(data: data)
+//                    photo.image = data
+//                }
+//            }
+//        }
         
         return cell
     }
@@ -180,7 +238,7 @@ extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControlle
         
         animator.startAnimation()
     }
-
+    
     
     //Mark: - MapKit settings
     
