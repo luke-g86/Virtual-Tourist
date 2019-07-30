@@ -21,7 +21,6 @@ class MapViewController: UIViewController {
     var selectedPin: MKAnnotation?
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,7 +34,7 @@ class MapViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         setupFetchedResultsController()
-       fetchPinToMap()
+        fetchPinToMap()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -94,7 +93,7 @@ class MapViewController: UIViewController {
             }
         }
     }
-    
+
     
     // MARK: - Network connection
     
@@ -121,7 +120,6 @@ class MapViewController: UIViewController {
                 print(error?.localizedDescription ?? "error")
                 return
             }
-            
             
             // For randomly selected page, URLs are being downloaded, parsed and saved for each photo.
             // As user can drop multiple pins, actual photos are not downloaded yet.
@@ -164,6 +162,8 @@ class MapViewController: UIViewController {
     
 }
 
+//MARK: - Extentions
+
 extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -172,7 +172,6 @@ extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelega
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if pinView == nil {
-            
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.tintColor = .red
             pinView!.animatesDrop = true
@@ -196,7 +195,9 @@ extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelega
         }
     }
 
-    //
+    // Filter selected pin and perform segue to the new view controller.
+    // selected pin is being deselected to assure its responsiveness next time.
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         guard let pins = fetchedResultsController.fetchedObjects else { return}
@@ -204,35 +205,15 @@ extension MapViewController: MKMapViewDelegate, NSFetchedResultsControllerDelega
 
         performSegue(withIdentifier: "showDetails", sender: pin)
         
-        // TODO - selection from fetched data
-        
-        
-        //        selectedPin = view.annotation!
-        //        performSegue(withIdentifier: "showDetails", sender: nil)
-    }
-    
-    
+            let selectedAnnotations = mapView.selectedAnnotations
+            for annotation in selectedAnnotations {
+                mapView.deselectAnnotation(annotation, animated: false)
+            }
+        }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // update maps
-        
         fetchPinToMap()
-        
     }
-    
-    
-    //    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-    //        guard let pin = anObject as? Pin else {
-    //            print(preconditionFailure("all changes observed in the mapView should be for Pin"))
-    //            return}
-    //
-    //        switch type {
-    //        case .insert:
-    //            mapView.addAnnotations(pin)
-    //        case .update:
-    //        case .delete:
-    //        }
-    //
-    //    }
 }
 

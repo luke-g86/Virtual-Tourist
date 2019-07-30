@@ -52,6 +52,14 @@ class PhotoAlbumViewController: UIViewController {
         let photo = Photo(context: dataController.viewContext)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        fetchedResultsController = nil
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setupFetchedResultsController()
+    }
+    
     func setupCollectionView() {
         photosCollectionView.register(PhotosCollectionViewCell.self, forCellWithReuseIdentifier: "photoCell")
         photosCollectionView.backgroundColor = UIColor.white
@@ -130,10 +138,10 @@ class PhotoAlbumViewController: UIViewController {
         
         APIConnection.getDataFromFlickr(longitude: longitude, latitude: latitude, page: page) { (photoResponse, error) in
             DispatchQueue.main.async {
-            guard let photoResponse = photoResponse else {
-                print(error?.localizedDescription ?? "unknown error")
-                return
-            }
+                guard let photoResponse = photoResponse else {
+                    print(error?.localizedDescription ?? "unknown error")
+                    return
+                }
                 self.pin.maxPages = Int32(photoResponse.photos.pages)
                 for url in photoResponse.photos.photo {
                     let photo = Photo(context: self.dataController.viewContext)
@@ -143,164 +151,131 @@ class PhotoAlbumViewController: UIViewController {
                     photo.imageURL = APIConnection.urlFromFlickrData(server: url.server, id: url.id, secret: url.secret, farm: url.farm).url
                     photo.pin = self.pin
                     print(photo.imageURL)
-                  
+                    
                 }
                 try? self.dataController.viewContext.save()
                 self.downloadPictures()
             }
-        
+            
         }
         
     }
     
 }
 
-    // MARK: - Extentions
+// MARK: - Extentions
 
-    extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
+extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    //MARK: - CollectionView settings
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return fetchedResultsController.fetchedObjects?.count ?? 0
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        //MARK: - CollectionView settings
+        let photo = fetchedResultsController.object(at: indexPath)
         
-        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return fetchedResultsController.fetchedObjects?.count ?? 0
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as! PhotosCollectionViewCell
+        
+        cell.imageView.image = UIImage(named: "placeholder")
+        
+        if let data = photo.image {
+            cell.imageView.image = UIImage(data: data)
+            
         }
         
-        func numberOfSections(in collectionView: UICollectionView) -> Int {
-            return 1
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let photoToDelete = fetchedResultsController.object(at: indexPath)
+        print(photoToDelete)
+        dataController.viewContext.delete(photoToDelete)
+        
+        try? dataController.viewContext.save()
+        
+        return
+    }
+    
+    //Mark: - MapKit settings
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        
+        let reuseId = "pin"
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.tintColor = .red
+            pinView!.animatesDrop = true
+            pinView!.canShowCallout = true
+            pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
+            print(pinView!.annotation?.coordinate)
+        }
+        else {
+            pinView!.annotation = annotation
         }
         
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            
-            let photo = fetchedResultsController.object(at: indexPath)
-            
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as! PhotosCollectionViewCell
-            
-            cell.imageView.image = UIImage(named: "placeholder")
-            
-            if let data = photo.image {
-                cell.imageView.image = UIImage(data: data)
+        return pinView
+    }
+    
 
+    
+    //Mark: - CoreData settings
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        blockOperation.removeAll(keepingCapacity: false)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        switch type {
+        case .insert: blockOperation.append(BlockOperation(block: {[weak self] in
+            if let this = self {
+                this.photosCollectionView.insertItems(at: [newIndexPath!])
             }
+        })
+            )
             
-            return cell
-        }
-        
-        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            
-            let photoToDelete = fetchedResultsController.object(at: indexPath)
-            print(photoToDelete)
-            dataController.viewContext.delete(photoToDelete)
-            
-            try? dataController.viewContext.save()
-            
-            return
-        }
-        
-        //Mark: - MapKit settings
-        
-        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            
-            
-            let reuseId = "pin"
-            var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-            
-            if pinView == nil {
-                
-                pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-                pinView!.tintColor = .red
-                pinView!.animatesDrop = true
-                pinView!.canShowCallout = true
-                pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
-                print(pinView!.annotation?.coordinate)
+        case .update: blockOperation.append(BlockOperation(block: {
+            [weak self] in
+            if let this = self {
+                this.photosCollectionView.reloadItems(at: [indexPath!])
             }
-            else {
-                pinView!.annotation = annotation
-            }
+        }))
             
-            return pinView
-        }
-        
-        //Mark: - CoreData settings
-        
-        func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-            blockOperation.removeAll(keepingCapacity: false)
-        }
-        
-        func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-
-            switch type {
-            case .insert: blockOperation.append(BlockOperation(block: {[weak self] in
-                if let this = self {
-                    this.photosCollectionView.insertItems(at: [newIndexPath!])
-                }
-                })
-                )
-            
-            case .update: blockOperation.append(BlockOperation(block: {
-                [weak self] in
-                if let this = self {
-                    this.photosCollectionView.reloadItems(at: [indexPath!])
-                }
-            }))
-                
-            case .move: blockOperation.append(BlockOperation(block: {
-                [weak self] in
-                if let this = self {
-                    this.photosCollectionView.moveItem(at: indexPath!, to: newIndexPath!)
-                }
-            }))
-            case .delete: blockOperation.append(BlockOperation(block: {
-                [weak self] in
-                if let this = self {
-                    this.photosCollectionView.deleteItems(at: [indexPath!])
-                }
-            }))
+        case .move: blockOperation.append(BlockOperation(block: {
+            [weak self] in
+            if let this = self {
+                this.photosCollectionView.moveItem(at: indexPath!, to: newIndexPath!)
             }
-        }
-        
-//            }
-//
-//            if let indexPath = indexPath, type == .delete {
-//                photosCollectionView.deleteItems(at: [indexPath])
-//                return
-//            }
-//
-//            if let indexPath = indexPath, type == .insert {
-//                photosCollectionView.insertItems(at: [indexPath])
-//                return
-//            }
-//
-//            if let newIndexPath = newIndexPath, let oldIndexPath = indexPath, type == .move {
-//                photosCollectionView.moveItem(at: oldIndexPath, to: newIndexPath)
-//                return
-//            }
-//
-//            if type != .update {
-//                photosCollectionView.reloadData()
-//            }
-        
-
-//        func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-//
-//            let indexSet = IndexSet(integer: sectionIndex)
-//
-//            switch type {
-//            case .insert: photosCollectionView.insertSections(indexSet)
-//            case .delete: photosCollectionView.deleteSections(indexSet)
-//            case .update: photosCollectionView.reloadData()
-//            default:
-//                fatalError("error")
-//            }
-//        }
-        
-        func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-            photosCollectionView.performBatchUpdates({ () -> Void in
-                for operation: BlockOperation in self.blockOperation {
-                    operation.start()
-                }
-            }) { (finished) -> Void in
-                self.blockOperation.removeAll(keepingCapacity: false)
+        }))
+        case .delete: blockOperation.append(BlockOperation(block: {
+            [weak self] in
+            if let this = self {
+                this.photosCollectionView.deleteItems(at: [indexPath!])
             }
+        }))
         }
-        
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        photosCollectionView.performBatchUpdates({ () -> Void in
+            for operation: BlockOperation in self.blockOperation {
+                operation.start()
+            }
+        }) { (finished) -> Void in
+            self.blockOperation.removeAll(keepingCapacity: false)
+        }
+    }
+    
 }
