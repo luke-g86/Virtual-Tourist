@@ -80,7 +80,6 @@ class PhotoAlbumViewController: UIViewController {
     
     //MARK: - Network connection
     
-    
     //MARK: Downloading pictures from flickr
     func downloadPictures() {
         try? fetchedResultsController.performFetch()
@@ -90,7 +89,6 @@ class PhotoAlbumViewController: UIViewController {
             DispatchQueue.main.async {
                 self.label.isHidden = false
             }
-            
         } else {
             for photo in arrayOfPhotos {
                 if photo.image == nil {
