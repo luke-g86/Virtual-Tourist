@@ -17,39 +17,31 @@ class PhotoAlbumViewController: UIViewController {
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var refreshButton: UIButton!
     
+    //MARK: Variables
+    
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Photo>!
-    
-    private var hiddenCells: [PhotosCollectionViewCell] = []
-    private var expandedCell: PhotosCollectionViewCell?
-    private var isStatusBarHidden = false
     var blockOperation: [BlockOperation] = []
     
-    override var prefersStatusBarHidden: Bool {
-        return isStatusBarHidden
-    }
+    
+    
+    //MARK: View Controller setup
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Fetched pictures from Flickr"
         
-        
-        photosCollectionView.delegate = self
-        photosCollectionView.collectionViewLayout = CollectionViewFlow()
-        mapView.delegate = self
+    
+  
         
         setupFetchedResultsController()
         downloadPictures()
         setupCollectionView()
         
+        setupMap()
         
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = pin.coordinate
-        
-        let fetched = fetchedResultsController.fetchedObjects
-        let photo = Photo(context: dataController.viewContext)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -59,14 +51,18 @@ class PhotoAlbumViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         setupFetchedResultsController()
     }
-    
+
+
+    //MARK: CollectionView setup method
     func setupCollectionView() {
+        photosCollectionView.delegate = self
+        photosCollectionView.collectionViewLayout = CollectionViewFlow()
         photosCollectionView.register(PhotosCollectionViewCell.self, forCellWithReuseIdentifier: "photoCell")
         photosCollectionView.backgroundColor = UIColor.white
         photosCollectionView.reloadData()
-        
     }
     
+    //MARK: CoreData setup method
     func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
@@ -85,9 +81,11 @@ class PhotoAlbumViewController: UIViewController {
         }
     }
     
+    //MARK: - Network connection
+    
+    
+    //MARK: Downloading pictures from flickr
     func downloadPictures() {
-        
-        
         try? fetchedResultsController.performFetch()
         guard let arrayOfPhotos = fetchedResultsController.fetchedObjects else { return }
         
@@ -106,8 +104,8 @@ class PhotoAlbumViewController: UIViewController {
         }
     }
     
+    //MARK: Refresh button. Downloading images URLs and saving to the database
     @IBAction func getNewPhotos(sender: Any?) {
-        
         
         // downloading new pictures
         try? fetchedResultsController.performFetch()
@@ -122,7 +120,6 @@ class PhotoAlbumViewController: UIViewController {
             
             print(arrayOfPhotos.count)
         }
-        
         
         let latitude = pin.coordinate.latitude
         let longitude = pin.coordinate.longitude
@@ -150,7 +147,6 @@ class PhotoAlbumViewController: UIViewController {
                     //MARK: Constructing URL
                     photo.imageURL = APIConnection.urlFromFlickrData(server: url.server, id: url.id, secret: url.secret, farm: url.farm).url
                     photo.pin = self.pin
-                    print(photo.imageURL)
                     
                 }
                 try? self.dataController.viewContext.save()
@@ -158,16 +154,60 @@ class PhotoAlbumViewController: UIViewController {
             }
             
         }
-        
     }
     
+    //MARK: - Map set up
+    
+    //MARK: Set annotation and map bahavior
+    
+    func setupMap() {
+        mapView.delegate = self
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = pin.coordinate
+        
+        
+        locationToName(location: pin.coordinate) { (location, error) in
+            DispatchQueue.main.async {
+                guard let location = location else {
+                    print(error?.localizedDescription ?? "unknown error")
+                    return
+                }
+                let stringArr = String(describing: location)
+                let separated = stringArr.components(separatedBy: ",")
+                
+                annotation.title = separated[0]
+                annotation.subtitle = separated[2]
+                
+                self.mapView.addAnnotation(annotation)
+                let region = MKCoordinateRegion(center: self.pin.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
+                self.mapView.setRegion(region, animated: true)
+                self.mapView.selectAnnotation(annotation, animated: true)
+            }
+        }
+        mapView.isUserInteractionEnabled = false
+    }
+    
+    //MARK: Convert selection to address
+    
+    func locationToName(location: CLLocationCoordinate2D, completionHandler: @escaping (CLPlacemark?, Error?) -> Void){
+        let loc = CLLocation.init(latitude: location.latitude, longitude: location.longitude)
+        CLGeocoder().reverseGeocodeLocation(loc, completionHandler: {(placemarks: [CLPlacemark]?, error: Error?) in
+            guard let placemarks = placemarks else {
+                print(error?.localizedDescription ?? "")
+                completionHandler(nil, error)
+                return
+            }
+            let placemark = placemarks[0]
+            completionHandler(placemark, nil)
+        })
+    }
 }
 
 // MARK: - Extentions
 
 extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    //MARK: - CollectionView settings
+    //MARK: CollectionView settings
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchedResultsController.fetchedObjects?.count ?? 0
@@ -204,10 +244,11 @@ extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControlle
         return
     }
     
-    //Mark: - MapKit settings
+    //MARK: MapKit settings
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
+        guard annotation is MKPointAnnotation else { print("no mkpointannotaions"); return nil }
         
         let reuseId = "pin"
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
@@ -215,11 +256,12 @@ extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControlle
         if pinView == nil {
             
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.centerOffset = CGPoint(x: 0, y: 1000)
             pinView!.tintColor = .red
             pinView!.animatesDrop = true
             pinView!.canShowCallout = true
-            pinView!.rightCalloutAccessoryView = UIButton(type: .infoDark)
-            print(pinView!.annotation?.coordinate)
+            pinView!.rightCalloutAccessoryView = UIButton(type: .system)
+            
         }
         else {
             pinView!.annotation = annotation
@@ -227,14 +269,15 @@ extension PhotoAlbumViewController: MKMapViewDelegate, NSFetchedResultsControlle
         
         return pinView
     }
-    
 
     
-    //Mark: - CoreData settings
+    //MARK: CoreData settings
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         blockOperation.removeAll(keepingCapacity: false)
     }
+    
+    //MARK: Controller with set block operations put in a queue
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         

@@ -40,7 +40,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         saveContext()
     }
 
-    
     func saveContext() {
         try? dataController.viewContext.save()
     }

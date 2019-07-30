@@ -19,6 +19,7 @@ class CollectionViewFlow: UICollectionViewFlowLayout {
             firstSetupDone = true
         }
     }
+    
     private func setup() {
         scrollDirection = .vertical
         minimumInteritemSpacing = 1
@@ -27,8 +28,6 @@ class CollectionViewFlow: UICollectionViewFlowLayout {
         let width = (UIScreen.main.bounds.width - 32) / 3
         
         itemSize = CGSize(width: width, height: width)
-        
-
     }
     
 

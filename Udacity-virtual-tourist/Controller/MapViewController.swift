@@ -21,13 +21,14 @@ class MapViewController: UIViewController {
     var selectedPin: MKAnnotation?
     
     
+    //MARK: - View's behavior
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let longTap = UILongPressGestureRecognizer(target: self, action: #selector(longTapRecognizer(sender:)))
-        mapView.delegate = self
-        mapView.addGestureRecognizer(longTap)
+        self.title = "Drop a Pin to fetch pictures"
         
+        mapSetup()
         setupFetchedResultsController()
 
     }
@@ -50,8 +51,15 @@ class MapViewController: UIViewController {
         }
     }
     
-    
     //MARK: - Interaction with a map
+    
+    //MARK: Map set up
+    
+    func mapSetup() {
+        let longTap = UILongPressGestureRecognizer(target: self, action: #selector(longTapRecognizer(sender:)))
+        mapView.delegate = self
+        mapView.addGestureRecognizer(longTap)
+    }
     
     @objc func longTapRecognizer(sender: UIGestureRecognizer) {
         
@@ -78,6 +86,7 @@ class MapViewController: UIViewController {
         }
     }
     
+    //MARK: Updating map by placing pins
 
     func fetchPinToMap() {
         

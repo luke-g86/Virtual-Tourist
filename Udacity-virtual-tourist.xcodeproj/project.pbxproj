@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0440E30F22DCCDAD00839169 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440E30E22DCCDAD00839169 /* AppDelegate.swift */; };
-		0440E31122DCCDAD00839169 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0440E31022DCCDAD00839169 /* ViewController.swift */; };
 		0440E31422DCCDAD00839169 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0440E31222DCCDAD00839169 /* Main.storyboard */; };
 		0440E31622DCCDAE00839169 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0440E31522DCCDAE00839169 /* Assets.xcassets */; };
 		0440E31922DCCDAE00839169 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0440E31722DCCDAE00839169 /* LaunchScreen.storyboard */; };
@@ -30,7 +29,6 @@
 /* Begin PBXFileReference section */
 		0440E30B22DCCDAD00839169 /* Udacity-virtual-tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Udacity-virtual-tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0440E30E22DCCDAD00839169 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0440E31022DCCDAD00839169 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0440E31322DCCDAD00839169 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0440E31522DCCDAE00839169 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0440E31822DCCDAE00839169 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -84,7 +82,6 @@
 			children = (
 				0440E30E22DCCDAD00839169 /* AppDelegate.swift */,
 				0440E32022DCCF4300839169 /* Model */,
-				0440E31022DCCDAD00839169 /* ViewController.swift */,
 				0440E32222DCCF5200839169 /* View */,
 				0440E32122DCCF4800839169 /* Controller */,
 				0440E31222DCCDAD00839169 /* Main.storyboard */,
@@ -242,7 +239,6 @@
 				0440E32A22DD5A9F00839169 /* MapViewController.swift in Sources */,
 				04C56FAF22E5922E00F889AA /* APIconnection.swift in Sources */,
 				04C56FA622E2DC3B00F889AA /* DataController.swift in Sources */,
-				0440E31122DCCDAD00839169 /* ViewController.swift in Sources */,
 				04C56FA922E2F13000F889AA /* Pin+Extentions.swift in Sources */,
 				C3A705F522E957AC001D05E8 /* CollectionViewCell.swift in Sources */,
 				04C56FAD22E2F19F00F889AA /* Photo+Extention.swift in Sources */,

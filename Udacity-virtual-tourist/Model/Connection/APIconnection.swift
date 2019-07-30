@@ -10,12 +10,12 @@ import Foundation
 
 class APIConnection {
     
+    //MARK: Fetching JSON from the Flickr API
+    
     class func getDataFromFlickr(longitude: Double, latitude: Double, page: Int32?, completionHandler: @escaping (PhotosSearchResponse?, Error?) -> Void) {
         
         let createdURL = APIendpoints.constructURL(latitude: latitude, longitute: longitude, page: page ?? 1).url
-        
         let task = URLSession.shared.dataTask(with: createdURL!) { (data, response, error) in
-            
             guard let data = data else {
                 DispatchQueue.main.async {
                     completionHandler(nil, error)
@@ -37,8 +37,9 @@ class APIConnection {
             
         }
         task.resume()
-        
     }
+    
+    //MARK: Constructing URL to the image according to Flickr's specification
     
     class func urlFromFlickrData(server: String, id: String, secret: String, farm: Int) -> URLComponents {
      
@@ -52,8 +53,9 @@ class APIConnection {
         
     }
     
+    //MARK: Downloading pictures from the given url
+    
     class func downloadPhotos(url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        
         var request = URLRequest(url: url)
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
