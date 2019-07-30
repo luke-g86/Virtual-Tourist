@@ -31,7 +31,7 @@ class APIendpoints {
         static let method = "flickr.photos.search"
         static let format = "json"
         // Radius city level
-        static let radius = 6
+        static let radius = 5
         // No callback
         static let noJsonCallBack = 1
         // No. of pictures

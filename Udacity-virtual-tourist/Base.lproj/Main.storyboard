@@ -104,6 +104,9 @@
                                         <state key="normal" title="Button">
                                             <color key="titleColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         </state>
+                                        <connections>
+                                            <action selector="getNewPhotosWithSender:" destination="pSA-1w-gyr" eventType="touchUpInside" id="h7Q-9Z-SOt"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
