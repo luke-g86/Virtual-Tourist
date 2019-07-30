@@ -25,8 +25,6 @@ class PhotoAlbumViewController: UIViewController {
     var fetchedResultsController: NSFetchedResultsController<Photo>!
     var blockOperation: [BlockOperation] = []
     
-    
-    
     //MARK: View Controller setup
     
     override func viewDidLoad() {
