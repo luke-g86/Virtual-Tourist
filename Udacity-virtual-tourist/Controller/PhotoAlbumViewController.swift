@@ -16,6 +16,7 @@ class PhotoAlbumViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var photosCollectionView: UICollectionView!
     @IBOutlet weak var refreshButton: UIButton!
+    @IBOutlet weak var label: UILabel!
     
     //MARK: Variables
     
@@ -33,9 +34,6 @@ class PhotoAlbumViewController: UIViewController {
         
         self.title = "Fetched pictures from Flickr"
         
-    
-  
-        
         setupFetchedResultsController()
         downloadPictures()
         setupCollectionView()
@@ -50,6 +48,7 @@ class PhotoAlbumViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         setupFetchedResultsController()
+        label.isHidden = true
     }
 
 
@@ -88,16 +87,23 @@ class PhotoAlbumViewController: UIViewController {
     func downloadPictures() {
         try? fetchedResultsController.performFetch()
         guard let arrayOfPhotos = fetchedResultsController.fetchedObjects else { return }
-        
-        for photo in arrayOfPhotos {
-            if photo.image == nil {
-                APIConnection.downloadPhotos(url: photo.imageURL!) { (data, response, error) in
-                    DispatchQueue.main.async {
-                        guard let data = data else {
-                            print(error?.localizedDescription ?? "other error")
-                            return
+
+        if arrayOfPhotos.isEmpty {
+            DispatchQueue.main.async {
+                self.label.isHidden = false
+            }
+            
+        } else {
+            for photo in arrayOfPhotos {
+                if photo.image == nil {
+                    APIConnection.downloadPhotos(url: photo.imageURL!) { (data, response, error) in
+                        DispatchQueue.main.async {
+                            guard let data = data else {
+                                print(error?.localizedDescription ?? "other error")
+                                return
+                            }
+                            photo.image = data
                         }
-                        photo.image = data
                     }
                 }
             }
