@@ -20,8 +20,7 @@ Project uses MapKit and utilizes Flickr API to
 * Save data into the database made with the CoreData framework
 * Data in relation one-to-many are being presented in the form of CollectionView
 * User can re-fetch new set of pictures from API and / or DELETE pictures directly from CollectionView. 
-* All requests are being performed in threads to not impact on app snappiness.
- 
+* All requests are being performed in threads to not obstruct an  app snappiness.
 
 
 
